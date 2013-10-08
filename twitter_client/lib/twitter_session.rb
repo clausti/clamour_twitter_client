@@ -1,8 +1,8 @@
 class TwitterSession
   include Singleton
 
-  CONSUMER_KEY = "eMeovi2qKjxmRKOZGYUwQ"
-  CONSUMER_SECRET = "8I6r7cUNqbtzfrHxF93A6hkMG9YYQRnF4Qp7jv9doE"
+  CONSUMER_KEY = ENV["CONSUMER_KEY"]
+  CONSUMER_SECRET = ENV["CONSUMER_SECRET"]
 
   CONSUMER = OAuth::Consumer.new(CONSUMER_KEY,
                                  CONSUMER_SECRET,
