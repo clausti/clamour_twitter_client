@@ -15,7 +15,7 @@ class TwitterSession
     #returns NET::HTTP object. #body pulls out JSON
   end
 
-  def self.post(*args)
+  def self.post(*args) # path and optional headers
     self.instance.access_token.post(*args).body
     #returns NET::HTTP object #body pulls out JSON
   end
