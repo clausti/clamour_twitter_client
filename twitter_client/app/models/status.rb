@@ -12,34 +12,36 @@ class Status < ActiveRecord::Base
                          :scheme => "https",
                          :host => "api.twitter.com",
                          :path => "/1.1/statuses/user_timeline.json",
-                         :query_values => { :user_id => twitter_user_id }
+                         :query_values => { :user_id => twitter_user_id,
+                                            :count => 200}
                          ).to_s
 
     json_statuses = TwitterSession.get(get_statuses_url) #array or something
     status_objects = []
 
-    json_statuses.each do |status|
-      status_objects << self.retrieve_or_create(status)
+    statuses_hash = JSON.parse(json_statuses)
+    statuses_hash.each do |status_hash|
+      status_objects << self.retrieve_or_create(status_hash)
     end
 
     status_objects
   end
 
 
-  def self.retrieve_or_create(json_status)
-    status = Status.find_by_twitter_status_id(json_status["id_str"])
+  def self.retrieve_or_create(status_hash)
+    status = Status.find_by_twitter_status_id(status_hash["id_str"])
 
     if status
       status
     else
-      status = self.parse_twitter_status(json_status)
+      status = self.parse_twitter_status(status_hash)
     end
   end
 
-  def self.parse_twitter_status(json_status) #received from where?
-    twitter_status_id = json_status["id_str"]
-    twitter_user_id = json_status["user"]["id_str"]
-    body = json_status["text"]
+  def self.parse_twitter_status(status_hash) #received from where?
+    twitter_status_id = status_hash["id_str"]
+    twitter_user_id = status_hash["user"]["id_str"]
+    body = status_hash["text"]
     Status.create({:twitter_user_id => twitter_user_id,
                   :twitter_status_id => twitter_status_id,
                   :body => body})

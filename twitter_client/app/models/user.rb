@@ -2,7 +2,7 @@ class User < ActiveRecord::Base
   attr_accessible :twitter_user_id, :screen_name
 
   validates :twitter_user_id, :uniqueness => true, :presence => true
-  validates :screen_name, :uniqueness => true, , :presence => true
+  validates :screen_name, :uniqueness => true, :presence => true
 
   def self.fetch_by_screen_name(screen_name)
     get_user_url = Addressable::URI.new(
@@ -16,9 +16,9 @@ class User < ActiveRecord::Base
   end
 
   def self.parse_twitter_params(user_as_json)
-    screen_name = user_as_json["screen_name"]
-    twitter_user_id = user_as_json["id_str"]
-
+    user_hash = JSON.parse(user_as_json)
+    screen_name = user_hash["screen_name"]
+    twitter_user_id = user_hash["id_str"]
     User.create({:screen_name => screen_name, :twitter_user_id => twitter_user_id})
   end
 
